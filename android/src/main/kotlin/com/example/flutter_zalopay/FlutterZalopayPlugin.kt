@@ -6,9 +6,11 @@ import android.content.Intent
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.NewIntentListener
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPayError
@@ -25,21 +27,27 @@ class FlutterZalopayPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, New
   private lateinit var channel : MethodChannel
 
   private var activity: Activity? = null
-  private var context: Context? = null
 
   private var appId: Int? = null
   private var uriScheme: String? = null
   private var environment: Environment = Environment.SANDBOX
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    Log.d(
+      "onAttachedToEngine",
+      "onAttachedToEngine"
+    )
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter.native/channelPayOrder")
     channel.setMethodCallHandler(this)
-    context = flutterPluginBinding.applicationContext
   }
 
-  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    activity = binding.activity
-    binding.addOnNewIntentListener(this)
+  override fun onAttachedToActivity(p0: ActivityPluginBinding) {
+    Log.d(
+      "onAttachedToActivity",
+      "onAttachedToActivity"
+    )
+    activity = p0.activity
+    p0.addOnNewIntentListener(this)
     Log.d(
       "FlutterZalopayPlugin",
       "App Id Zalo: $appId"
@@ -55,13 +63,13 @@ class FlutterZalopayPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, New
     ZaloPaySDK.init(appId!!, environment)
   }
 
-  override fun onNewIntent(intent: Intent?): Boolean {
-    ZaloPaySDK.getInstance().onResult(intent)
-    return true
+  override fun onNewIntent(p0: Intent): Boolean {
+    ZaloPaySDK.getInstance().onResult(p0)
+    return false
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
-    when (result.method) {
+    when (call.method) {
       "payOrder" -> {
         val tagSuccess = "[OnPaymentSucceeded]"
         val tagError = "[onPaymentError]"
@@ -106,13 +114,14 @@ class FlutterZalopayPlugin: FlutterPlugin, MethodCallHandler, ActivityAware, New
     }
   }
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+  override fun onDetachedFromEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    Log.d("onDetachedFromEngine", "onDetachedFromEngine")
     channel.setMethodCallHandler(null)
   }
 
   override fun onDetachedFromActivityForConfigChanges() {}
 
-  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {}
+  override fun onReattachedToActivityForConfigChanges(p0: ActivityPluginBinding) {}
 
   override fun onDetachedFromActivity() {}
 }

@@ -68,5 +68,5 @@ android {
 }
 
 dependencies {
-    implementation files('zpdk-release-v3.1.aar')
+    compileOnly files('libs/zpdk-release-v3.1.aar')
 }

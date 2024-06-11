@@ -71,14 +71,20 @@ class _HomeState extends State<Home> {
             }
           },
           child: Container(
-              height: 50.0,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColor.primaryColor,
-                borderRadius: BorderRadius.circular(8.0),
+            height: 50.0,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColor.primaryColor,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: const Text(
+              "Create Order",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20.0,
               ),
-              child: Text("Create Order",
-                  style: TextStyle(color: Colors.white, fontSize: 20.0))),
+            ),
+          ),
         ),
       );
 

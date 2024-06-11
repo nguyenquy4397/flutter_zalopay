@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:sprintf/sprintf.dart';
 
 class FlutterZalopay {
-  static const MethodChannel _channel =
-      MethodChannel('flutter.native/channelPayOrder');
+  final MethodChannel _channel =
+      const MethodChannel('flutter.native/channelPayOrder');
 
   int _appId = 0;
   String _key1 = '';
@@ -44,11 +44,13 @@ class FlutterZalopay {
     _appId = appId;
     _key1 = key1;
 
-    await _channel.invokeMethod('init', {
+    final result = await _channel.invokeMethod('init', {
       "appId": appId,
       "uriScheme": uriScheme,
       "environment": environment.value,
     });
+
+    print(result);
   }
 
   Future<CreateOrderResponse?> createOrder(int price) async {
